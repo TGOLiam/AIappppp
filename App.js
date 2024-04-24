@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ServerTest from './script';
-import ImagePickerExample from './imagepicker';
+import ImagePickerScript from './imagepicker';
 
 export default function App() {
   return (
     <View style={{ flex: 1 }}>
-      <ServerTest />
-      <ImagePickerExample />
+      
+      <ImagePickerScript />
       
     </View>  
     
