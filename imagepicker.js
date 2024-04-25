@@ -4,6 +4,7 @@ import { Button, Image, View, StyleSheet, Text, TextInput} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { createClient, CallbackUrl } from "@deepgram/sdk";
 import { manipulateAsync } from 'expo-image-manipulator';
+import { Audio } from 'expo-av';
 
 
 
@@ -84,7 +85,7 @@ export default function ImagePickerScript() {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        'X-RapidAPI-Key': '36bd46ce1dmshb13c8e862387c12p1ad17ejsn232fc5a04130',
+        'X-RapidAPI-Key': 'e3dd378c36mshfa7bf0801eb3953p1b55a4jsn5fa4ac659c4f',
         'X-RapidAPI-Host': 'open-ai21.p.rapidapi.com'
       },
       body: JSON.stringify({
@@ -144,14 +145,25 @@ async function speakAI(text) {
 
   try {
     const response = await fetch(url, options);
-    const result = await response.text();
-    console.log(result);
+    const result = await response.json();
+    if (response.ok){
+      console.log("Audio Done")
+    }
+    PlayAudio(result.audioContent)
   } catch (error) {
     console.error(error);
   }
 }
 
-
+const PlayAudio = async (audio) => {
+  try {
+    const soundObject = new Audio.Sound();
+    await soundObject.loadAsync({ uri: `data:audio/mp3;base64,${audio}` });
+    await soundObject.playAsync();
+  } catch (error) {
+    console.log('Error playing audio:', error);
+  }
+};
 
 
 
