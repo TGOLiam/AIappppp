@@ -12,13 +12,15 @@ export default function ImagePickerScript() {
   const [AItext, setAItext] = useState("Try askin me smth.......")  
   const [AIstatus, setStatus] = useState("status")
   const [userText, setUserText] = useState('')
-  const [OCRData, setOCRData] = useState('')
+  const [OCRtext, setOCRData] = useState(OCRData)
+  let OCRData
 
-  const topic = "Start your sentence with The topic is about."
+
+  let topic = "Start your sentence with The topic is about. ONLY ONE SENTENCE"
   
 
   const pickImage = async () => {
-    setOCRData('')
+    
     await ImagePicker.requestCameraPermissionsAsync();
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -27,7 +29,7 @@ export default function ImagePickerScript() {
       quality: 0.5,
     });
     const file = result.assets[0].base64
-    console.log('')
+    console.log(result.assets[0].uri)
     OcrApiRequest(file)
     
     if (!result.canceled) {
@@ -61,14 +63,11 @@ export default function ImagePickerScript() {
       const data = await response.json();
       if (response.ok){
         setStatus("Picture scanned...")
+        OCRData = data.ParsedResults[0].ParsedText
+        setOCRData(OCRData)
       }
-      const res = data.ParsedResults[0].ParsedText
-      const res2 = res.replace(/\s/g, "");
-      console.log(res2); 
-      
-      setOCRData(res2)
-      
-      AIapiRequest(topic)
+    
+      AIapiRequest(topic,OCRData)
     } catch (error) {
       console.error('Error occurred during OCR API request:', error);
       // Handle the error appropriately
@@ -76,7 +75,7 @@ export default function ImagePickerScript() {
   } 
 
 
-  async function AIapiRequest(question) {
+  async function AIapiRequest(question,OCRData) {
     console.log(question)
     console.log(OCRData)
     setStatus("Reading your topic...")
@@ -89,19 +88,27 @@ export default function ImagePickerScript() {
         'X-RapidAPI-Host': 'open-ai21.p.rapidapi.com'
       },
       body: JSON.stringify({
-        "question": question,
-        "context": OCRData
+        messages: [
+          {
+            role: 'user',
+            content: `CONTEXT:${OCRData}, QUESTION:${question} (BE DIRECT,READ CONTEXT BEFORE ANSWERING)`
+          }
+        ],
+        web_access: false
       })
     };
 
     try {
-      const response = await fetch('https://open-ai21.p.rapidapi.com/qa', options);
+      const response = await fetch('https://open-ai21.p.rapidapi.com/chatgpt', options);
       const AIresponse = await response.json();
       // Check if response is successful
       if (response.ok) {
         setStatus("Finished reading...")
+        const gatcha = `Gatchaa! ${AIresponse.result} How can I help you?`
         console.log("AI: ", AIresponse);
-        setAItext(`Gatchaa! ${AIresponse.result} How can I help you?`)
+
+        setAItext(gatcha)
+        speakAI(gatcha)
       } else {
         // If response is not successful, throw an error
         throw new Error('Network response was not ok.');
@@ -111,6 +118,37 @@ export default function ImagePickerScript() {
       // If an error occurs, reject the promise
       throw error;
     }
+}
+
+async function speakAI(text) {
+  const url = 'https://joj-text-to-speech.p.rapidapi.com/';
+  const options = {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'X-RapidAPI-Key': '36bd46ce1dmshb13c8e862387c12p1ad17ejsn232fc5a04130',
+      'X-RapidAPI-Host': 'joj-text-to-speech.p.rapidapi.com'
+    },
+    body: JSON.stringify({
+      input: { text: text },
+      voice: {
+        languageCode: 'en-GB',
+        name: 'en-GB-Standard-A',
+        ssmlGender: 'FEMALE'
+      },
+      audioConfig: {
+        audioEncoding: 'MP3'
+      }
+    })
+  };
+
+  try {
+    const response = await fetch(url, options);
+    const result = await response.text();
+    console.log(result);
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 
@@ -126,10 +164,31 @@ export default function ImagePickerScript() {
 
 
 
+
+/*
+const playAudio = async (base64Audio) => {
+  const decodedAudio = await new Sound(base64Audio, "", (error) => {
+    if (error) {
+      console.error('failed to decode audio:', error);
+    } else {
+      decodedAudio.play();
+    }
+  });
+};
+*/
+
+
+
+
+
+
+
+
+
   return (
     <View style={styles.container} >
       <Text style = {{paddingBottom: 100}}>{AItext}</Text>
-      <TextInput placeholder = "Try saying summarize for me" style ={{paddingBottom: 100}} value = {userText} onChangeText={setUserText} onEndEditing={ () => AIapiRequest(userText,OCRData)}></TextInput>
+      <TextInput placeholder = "Try saying summarize for me" style ={{paddingBottom: 100}} value = {userText} onChangeText={setUserText} onEndEditing={ () => AIapiRequest(userText,OCRtext)}></TextInput>
       <Button title="Pick an image from camera roll" onPress={pickImage} />
       <Text>{AIstatus}</Text>
     </View >
