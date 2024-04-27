@@ -22,9 +22,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": [
-        "android.permission.RECORD_AUDIO"
-      ],
+      
       "package": "ai.app"
     },
     "web": {
@@ -36,9 +34,10 @@
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
-       
+        
       ]
     ],
+    
     "extra": {
       "eas": {
         "projectId": "5e8a19d6-197b-4bf1-838d-4869bc3544cb"
