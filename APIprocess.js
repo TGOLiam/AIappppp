@@ -1,14 +1,10 @@
 
 
 import * as ImagePicker from 'expo-image-picker';
-
-import { manipulateAsync } from 'expo-image-manipulator';
 import { Audio } from 'expo-av';
-import Voice from '@react-native-voice/voice';
 
 let OCRData
 let gatcha = 'hello'
-
 let topic = "Start your sentence with The topic is about. ONLY ONE SENTENCE"
 
 export { topic }
@@ -24,12 +20,9 @@ export const processImage = async () => {
   const file = result.assets[0].base64
   console.log(result.assets[0].uri)
   if (!result.canceled) {
-    console.log("image processed")
+    console.log("image processing")
   }
   return file
-
-
-
 }
 
 
@@ -112,7 +105,7 @@ export const AIapiRequest = async (data, question) => {
 
 
 
-async function speakAI(text) {
+export const speakAI = async (text) =>{
   const url = 'https://joj-text-to-speech.p.rapidapi.com/';
   const options = {
     method: 'POST',
@@ -140,13 +133,13 @@ async function speakAI(text) {
     if (response.ok) {
       console.log("Audio Done")
     }
-    PlayAudio(result.audioContent)
+    return result.audioContent
   } catch (error) {
     console.error(error);
   }
 }
 
-const PlayAudio = async (audio) => {
+export const PlayAudio = async (audio) => {
   try {
     const soundObject = new Audio.Sound();
     await soundObject.loadAsync({ uri: `data:audio/mp3;base64,${audio}` });
