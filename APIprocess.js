@@ -5,7 +5,7 @@ import { Audio } from 'expo-av';
 
 let OCRData
 let gatcha = 'hello'
-let topic = "Start your sentence with The topic is about. ONLY ONE SENTENCE"
+let topic = "The topic is about what? ONLY ONE SENTENCE"
 
 export { topic }
 
@@ -60,43 +60,39 @@ export async function OcrApiRequest(file) {
 
 
 export const AIapiRequest = async (data, question) => {
-  
-
+  if (data === undefined) {
+    data = ''
+  }
+  const url = 'https://models3.p.rapidapi.com/?model_id=5&prompt=Write%20prompt%20in%20body%20not%20here!';
   const options = {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
       'X-RapidAPI-Key': 'e3dd378c36mshfa7bf0801eb3953p1b55a4jsn5fa4ac659c4f',
-      'X-RapidAPI-Host': 'open-ai21.p.rapidapi.com'
+      'X-RapidAPI-Host': 'models3.p.rapidapi.com'
     },
     body: JSON.stringify({
       messages: [
         {
+          role: 'assistant',
+          content: `Your name is Gatcha, your purpose is to tutor and answer students' queries in their general studies. If they give a topic, you will answer the student's query based on, but not limited to, the given context. CONTEXT: ${data}`
+        },
+        {
           role: 'user',
-          content: `CONTEXT:${data}, QUESTION:${question} (BE DIRECT,READ CONTEXT BEFORE ANSWERING, CHECK SPELLING)`
+          content: question
         }
-      ],
-      web_access: false
+      ]
     })
   };
 
   try {
-    const response = await fetch('https://open-ai21.p.rapidapi.com/conversationllama', options);
-    const AIresponse = await response.json();
-    // Check if response is successful
-    if (response.ok) {
-
-      gatcha = `Gatchaa! ${AIresponse.result} How can I help you?`
-      console.log("AI: ", AIresponse);
-      return gatcha
-    } else {
-      // If response is not successful, throw an error
-      throw new Error('Network response was not ok.');
-    }
+    const response = await fetch(url, options);
+    const result = await response.json();
+    const AItext = result.content
+    console.log(AItext);
+    return AItext
   } catch (error) {
-    console.log(error);
-    // If an error occurs, reject the promise
-    throw error;
+    console.error(error);
   }
 }
 
@@ -105,40 +101,43 @@ export const AIapiRequest = async (data, question) => {
 
 
 
-export const speakAI = async (text) =>{
+export const speakAI = async (text) => {
+
+  const replacedText = text.replace(/\s+/g, ' ');
+   
   const url = 'https://natural-text-to-speech-converter-at-lowest-price.p.rapidapi.com/backend/ttsNewDemo';
   const options = {
-      method: 'POST',
-      headers: {
-          'content-type': 'application/json',
-          'X-RapidAPI-Key': 'e3dd378c36mshfa7bf0801eb3953p1b55a4jsn5fa4ac659c4f',
-          'X-RapidAPI-Host': 'natural-text-to-speech-converter-at-lowest-price.p.rapidapi.com'
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'X-RapidAPI-Key': 'e3dd378c36mshfa7bf0801eb3953p1b55a4jsn5fa4ac659c4f',
+      'X-RapidAPI-Host': 'natural-text-to-speech-converter-at-lowest-price.p.rapidapi.com'
+    },
+    body: JSON.stringify({
+      ttsService: 'polly',
+      audioKey: 'ff63037e-6994-4c50-9861-3e162ee56468',
+      storageService: 's3',
+      text: `<speak><p>${replacedText}</p></speak>`,
+      voice: {
+        value: 'en-GB_Emma',
+        lang: 'en-US'
       },
-      body: JSON.stringify({
-          ttsService: 'polly',
-          audioKey: 'ff63037e-6994-4c50-9861-3e162ee56468',
-          storageService: 's3',
-          text: `<speak><p>${text}</p></speak>`,
-          voice: {
-              value: 'en-GB_Emma',
-              lang: 'en-US'
-          },
-          audioOutput: {
-              fileFormat: 'mp3',
-              sampleRate: 24000
-          }
-      })
+      audioOutput: {
+        fileFormat: 'mp3',
+        sampleRate: 24000
+      }
+    })
   };
 
   try {
-      const response = await fetch(url, options);
-      const result = await response.json();
-      if (response.ok){
-        console.log("Audio Done: ",result.url);
-      }
-      return result.url
+    const response = await fetch(url, options);
+    const result = await response.json();
+    if (response.ok) {
+      console.log("Audio Done: ", result.url);
+    }
+    return result.url
   } catch (error) {
-      console.error(error);
+    console.error(error);
   }
 }
 

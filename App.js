@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, TextInput } from 'react-native';
 import { processImage, OcrApiRequest, AIapiRequest, topic, speakAI, PlayAudio } from './APIprocess'
-
+import { TestAI } from './test'
 
 export default function App() {
   const [AItext, setAItext] = useState("Try askin me smth.......")
@@ -43,14 +43,14 @@ export default function App() {
 
       <Text style={{ paddingBottom: 100 }}>{AItext}</Text>
 
-      <TextInput placeholder="Try saying summarize for me" style={{ paddingBottom: 100 }} value={userText} onChangeText={setUserText} onEndEditing={() => {
-        if (userText.trim() !== '') { // Check if userText is not empty
-          AIprocess(OCRtext, userText);
-        }
-      }}></TextInput>
+      <TextInput placeholder="Try saying summarize for me" style={{ paddingBottom: 100 }} value={userText} onChangeText={setUserText}></TextInput>
 
       <Button title="Pick an image from camera roll" onPress={imageprocess} />
-      
+      <Button title="Send" onPress={() => {
+        if (userText.trim() !== '') {
+          AIprocess(OCRtext, userText);
+        }
+      }} />
       <Text>{AIstatus}</Text>
 
 
