@@ -73,7 +73,7 @@ export const AIapiRequest = async (data, question) => {
       messages: [
         {
           role: 'user',
-          content: `CONTEXT:${data}, QUESTION:${question} (BE DIRECT,READ CONTEXT BEFORE ANSWERING)`
+          content: `CONTEXT:${data}, QUESTION:${question} (BE DIRECT,READ CONTEXT BEFORE ANSWERING, CHECK SPELLING)`
         }
       ],
       web_access: false
@@ -81,7 +81,7 @@ export const AIapiRequest = async (data, question) => {
   };
 
   try {
-    const response = await fetch('https://open-ai21.p.rapidapi.com/chatgpt', options);
+    const response = await fetch('https://open-ai21.p.rapidapi.com/conversationllama', options);
     const AIresponse = await response.json();
     // Check if response is successful
     if (response.ok) {
@@ -106,43 +106,46 @@ export const AIapiRequest = async (data, question) => {
 
 
 export const speakAI = async (text) =>{
-  const url = 'https://joj-text-to-speech.p.rapidapi.com/';
+  const url = 'https://natural-text-to-speech-converter-at-lowest-price.p.rapidapi.com/backend/ttsNewDemo';
   const options = {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-      'X-RapidAPI-Key': '36bd46ce1dmshb13c8e862387c12p1ad17ejsn232fc5a04130',
-      'X-RapidAPI-Host': 'joj-text-to-speech.p.rapidapi.com'
-    },
-    body: JSON.stringify({
-      input: { text: text },
-      voice: {
-        languageCode: 'en-GB',
-        name: 'en-GB-Standard-A',
-        ssmlGender: 'FEMALE'
+      method: 'POST',
+      headers: {
+          'content-type': 'application/json',
+          'X-RapidAPI-Key': 'e3dd378c36mshfa7bf0801eb3953p1b55a4jsn5fa4ac659c4f',
+          'X-RapidAPI-Host': 'natural-text-to-speech-converter-at-lowest-price.p.rapidapi.com'
       },
-      audioConfig: {
-        audioEncoding: 'MP3'
-      }
-    })
+      body: JSON.stringify({
+          ttsService: 'polly',
+          audioKey: 'ff63037e-6994-4c50-9861-3e162ee56468',
+          storageService: 's3',
+          text: `<speak><p>${text}</p></speak>`,
+          voice: {
+              value: 'en-GB_Emma',
+              lang: 'en-US'
+          },
+          audioOutput: {
+              fileFormat: 'mp3',
+              sampleRate: 24000
+          }
+      })
   };
 
   try {
-    const response = await fetch(url, options);
-    const result = await response.json();
-    if (response.ok) {
-      console.log("Audio Done")
-    }
-    return result.audioContent
+      const response = await fetch(url, options);
+      const result = await response.json();
+      if (response.ok){
+        console.log("Audio Done: ",result.url);
+      }
+      return result.url
   } catch (error) {
-    console.error(error);
+      console.error(error);
   }
 }
 
 export const PlayAudio = async (audio) => {
   try {
     const soundObject = new Audio.Sound();
-    await soundObject.loadAsync({ uri: `data:audio/mp3;base64,${audio}` });
+    await soundObject.loadAsync({ uri: audio });
     await soundObject.playAsync();
   } catch (error) {
     console.log('Error playing audio:', error);
