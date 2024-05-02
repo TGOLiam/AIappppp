@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, TextInput } from 'react-native';
 import { processImage, OcrApiRequest, AIapiRequest, topic, speakAI, PlayAudio } from './APIprocess'
-import { TestAI } from './test'
+
 
 export default function App() {
   const [AItext, setAItext] = useState("Try askin me smth.......")
@@ -43,7 +43,6 @@ export default function App() {
 
       <Text style={{ paddingBottom: 100 }}>{AItext}</Text>
 
-      <TextInput placeholder="Try saying summarize for me" style={{ paddingBottom: 100 }} value={userText} onChangeText={setUserText}></TextInput>
 
       <Button title="Pick an image from camera roll" onPress={imageprocess} />
       <Button title="Send" onPress={() => {
@@ -53,6 +52,7 @@ export default function App() {
       }} />
       <Text>{AIstatus}</Text>
 
+      <TextInput placeholder="Try saying summarize for me" style={styles.input} value={userText} onChangeText={setUserText}></TextInput>
 
     </View>
 
@@ -66,11 +66,18 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
+  
     justifyContent: "center",
   },
 
-
+  input:{
+    borderColor: 'black',
+    borderWidth: 1,
+    width: '80%',
+    borderRadius: 7,
+    height: 40,
+    
+  }
 
 
 

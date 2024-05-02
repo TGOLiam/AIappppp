@@ -5,7 +5,7 @@ import { Audio } from 'expo-av';
 
 let OCRData
 let gatcha = 'hello'
-let topic = "The topic is about what? ONLY ONE SENTENCE"
+let topic = "The image is about what? ONLY ONE SENTENCE"
 
 export { topic }
 
@@ -75,7 +75,7 @@ export const AIapiRequest = async (data, question) => {
       messages: [
         {
           role: 'assistant',
-          content: `Your name is Gatcha, your purpose is to tutor and answer students' queries in their general studies. If they give a topic, you will answer the student's query based on, but not limited to, the given context. CONTEXT: ${data}`
+          content: `Your name is Gatcha, Act like the President in your responses CONTEXT: ${data}`
         },
         {
           role: 'user',
