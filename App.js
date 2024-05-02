@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, TextInput } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity, View, TextInput, KeyboardAvoidingView } from 'react-native';
 import { processImage, OcrApiRequest, AIapiRequest, topic, speakAI, PlayAudio } from './APIprocess'
 
 
@@ -39,7 +39,8 @@ export default function App() {
 
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    style={styles.container}>
 
       <Text style={{ paddingBottom: 100 }}>{AItext}</Text>
 
@@ -54,7 +55,7 @@ export default function App() {
 
       <TextInput placeholder="Try saying summarize for me" style={styles.input} value={userText} onChangeText={setUserText}></TextInput>
 
-    </View>
+    </KeyboardAvoidingView>
 
 
 
