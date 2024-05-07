@@ -1,0 +1,28 @@
+URGENT:
+
+
+BUTTON LOGIC (why first click, toggle deosnt work)
+
+MEDIUM:
+
+
+Pause and Play functions
+Finetune tab
+Greeting function
+
+HIGH:
+
+Finetune functions
+
+LOW:
+
+Design of header and input container
+BETTER ERROR HANDLE
+CHAT UI when typing
+Actual Design
+GATCHA ABOUT US
+
+
+
+
+

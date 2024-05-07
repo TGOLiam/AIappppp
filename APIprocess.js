@@ -6,8 +6,9 @@ import { Audio } from 'expo-av';
 let OCRData
 let gatcha = 'hello'
 let topic = "The image is about what? ONLY ONE SENTENCE"
+let soundObject
 
-export { topic }
+export { topic, soundObject }
 
 export const processImage = async () => {
   await ImagePicker.requestCameraPermissionsAsync();
@@ -59,7 +60,7 @@ export async function OcrApiRequest(file) {
 }
 
 
-export const AIapiRequest = async (data, question) => {
+export const AIapiRequest = async (data, question, signal) => {
   if (data === undefined) {
     data = ''
   }
@@ -75,14 +76,15 @@ export const AIapiRequest = async (data, question) => {
       messages: [
         {
           role: 'assistant',
-          content: `Your name is Gatcha, be poetic CONTEXT: ${data}`
+          content: `Your name is Gatcha, act like a british CONTEXT: ${data}`
         },
         {
           role: 'user',
           content: question
         }
       ]
-    })
+    }),
+    signal: signal
   };
 
   try {
@@ -92,7 +94,10 @@ export const AIapiRequest = async (data, question) => {
     console.log(AItext);
     return AItext
   } catch (error) {
-    console.error(error);
+    console.log(error);
+    if (error.name === 'AbortError') {
+      console.log("hello world")
+    }
   }
 }
 
@@ -104,7 +109,7 @@ export const AIapiRequest = async (data, question) => {
 export const speakAI = async (text) => {
 
   const replacedText = text.replace(/\s+/g, ' ');
-   
+
   const url = 'https://natural-text-to-speech-converter-at-lowest-price.p.rapidapi.com/backend/ttsNewDemo';
   const options = {
     method: 'POST',
@@ -141,13 +146,40 @@ export const speakAI = async (text) => {
   }
 }
 
-export const PlayAudio = async (audio) => {
+export const PlayAudio = async (input, audio) => {
+  console.log(audio)
   try {
-    const soundObject = new Audio.Sound();
+    soundObject = new Audio.Sound();
     await soundObject.loadAsync({ uri: audio });
-    await soundObject.playAsync();
+    if (input == "play") {
+
+      await soundObject.playAsync();
+    }
+
+
+
+
   } catch (error) {
     console.log('Error playing audio:', error);
   }
 };
+
+export const controlAudio = async (input, audio) => {
+  const soundObject = new Audio.Sound();
+  await soundObject.loadAsync({ uri: audio });
+  try {
+    if (input == "stop") {
+      await soundObject.stopAsync();
+    }
+
+    if (input == "resume") {
+      await soundObject.playAsync();
+    }
+  }
+  catch (error) {
+    console.log('Error playing audio:', error);
+  }
+
+}
+
 
