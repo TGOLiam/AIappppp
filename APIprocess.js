@@ -76,7 +76,7 @@ export const AIapiRequest = async (data, question, signal) => {
       messages: [
         {
           role: 'assistant',
-          content: `Your name is Gatcha, act like a british CONTEXT: ${data}`
+          content: `Your name is Gatcha, speak like a frenchman CONTEXT: ${data}`
         },
         {
           role: 'user',

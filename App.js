@@ -67,7 +67,7 @@ export default function App() {
 
     }
   }
-
+/*
   const processBtn = async (data, input) => {
     setProcessing(!isProcessing)
     if (!isProcessing) {
@@ -89,7 +89,7 @@ export default function App() {
       }
     }
   }
-
+*/
 
 
 
@@ -140,7 +140,7 @@ export default function App() {
 
         <TouchableOpacity onPress={() => {
 
-          processBtn(OCRtext, userText)
+          AIprocess(OCRtext, userText)
 
           setTextHolder(userText)
           setUserText("")
