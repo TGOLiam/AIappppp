@@ -1,19 +1,25 @@
-import { useState } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, TextInput, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { useReducer, useState } from 'react';
+import { Button, StyleSheet, Text, TouchableOpacity, View, TextInput, KeyboardAvoidingView, ScrollView, Switch } from 'react-native';
 import { processImage, OcrApiRequest, AIapiRequest, topic, speakAI, PlayAudio, soundObject, controlAudio } from './APIprocess'
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 
 
- 
 import Swiper from 'react-native-swiper';
 
 export default function App() {
-  const [AItext, setAItext] = useState("Try askin me smth.......")
+  const [AItext, setAItext] = useState("Watchap!! I'm Gatcha!!")
   const [textHolder, setTextHolder] = useState("Try saying summarize for me")
   const [userText, setUserText] = useState('')
   const [OCRtext, setOCRData] = useState('')
   const [soundData, setSound] = useState("")
- 
+
+  const [isLoaded, fonts] = useFonts({
+    ObelusCompact: require('./assets/fonts/ObelusCompact.ttf'),
+    // Add other fonts here with their corresponding file paths
+  });
+
 
   const [buttonIcon, setBtnIcon] = useState("send")
   const [isProcessing, setProcessing] = useState(false)
@@ -35,7 +41,7 @@ export default function App() {
     try {
 
       const signal = abortController.signal;
-
+      setBtnIcon("stop")
 
       setAItext("Using my brain")
 
@@ -58,39 +64,38 @@ export default function App() {
       console.log("AI Response: ", AI)
       setAItext(AI)
       setBtnIcon("send")
-      setProcessing(!isProcessing)
+      setProcessing((isProcessing) => !isProcessing)
+
     } catch (error) {
 
+      console.log(error.name)
+      if (error.name === 'ReferenceError'){
+        setAItext("Fetch Aborted")
+      }
+      else{
+        setAItext("An error occured")
 
-      setAItext("An error occured")
+      }
+
+
 
 
     }
   }
-/*
-  const processBtn = async (data, input) => {
-    setProcessing(!isProcessing)
-    if (!isProcessing) {
 
-      if (userText.trim() !== '') {
-        setBtnIcon("stop")
-        console.log("processing")
-        await AIprocess(data, input)
-        setProcessing(!isProcessing)
-        setBtnIcon("send")
-      }
+  const btnProcess = async () => {
+    setProcessing((isProcessing) => !isProcessing)
+    if (!isProcessing) {
+      console.log("OFF")
+      AIprocess(OCRtext, userText)
 
     }
     else {
-      console.log("cancelling")
+      abortController.abort()
+      console.log("ON")
       setBtnIcon("send")
-      if (abortController) {
-        abortController.abort();
-      }
     }
   }
-*/
-
 
 
 
@@ -102,7 +107,7 @@ export default function App() {
 
       <View style={styles.header}>
         <TouchableOpacity><Ionicons name="settings" size={35} style={styles.addIcon} > </Ionicons></TouchableOpacity>
-        <TouchableOpacity><Text style={{ fontSize: 20}}>Gatcha</Text></TouchableOpacity>
+        <TouchableOpacity><Text style={{ fontSize: 20, fontFamily: 'ObelusCompact' }}>Gatcha</Text></TouchableOpacity>
         <TouchableOpacity onPress={imageprocess}><Ionicons name="camera" size={40} style={styles.pictureIcon}></Ionicons></TouchableOpacity>
 
 
@@ -140,7 +145,7 @@ export default function App() {
 
         <TouchableOpacity onPress={() => {
 
-          AIprocess(OCRtext, userText)
+          btnProcess(OCRtext, userText)
 
           setTextHolder(userText)
           setUserText("")
@@ -183,13 +188,15 @@ const styles = StyleSheet.create({
     borderColor: "blue",
     alignItems: "center",
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    marginTop: 25
   },
 
   inputcontainer: {
     backgroundColor: "white",
     flexDirection: "row",
-    margin: 30
+    margin: 30,
+
   },
 
 
@@ -203,7 +210,8 @@ const styles = StyleSheet.create({
   addIcon: {
     //borderWidth: 1,
     borderColor: "blue",
-    justifyContent: "flex-start"
+    justifyContent: "flex-start",
+
   },
 
 

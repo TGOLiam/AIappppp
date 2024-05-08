@@ -64,6 +64,7 @@ export const AIapiRequest = async (data, question, signal) => {
   if (data === undefined) {
     data = ''
   }
+  console.log("Processing AI")
   const url = 'https://models3.p.rapidapi.com/?model_id=5&prompt=Write%20prompt%20in%20body%20not%20here!';
   const options = {
     method: 'POST',
@@ -76,7 +77,7 @@ export const AIapiRequest = async (data, question, signal) => {
       messages: [
         {
           role: 'assistant',
-          content: `Your name is Gatcha, speak like a frenchman CONTEXT: ${data}`
+          content: `Your name is Gatcha, the mini AI tutor,  your purpose is to tutor and answer students' queries in their general studies .Say "Gatcha!" as a catchline when you answer a query. CONTEXT: ${data}`
         },
         {
           role: 'user',
@@ -95,9 +96,7 @@ export const AIapiRequest = async (data, question, signal) => {
     return AItext
   } catch (error) {
     console.log(error);
-    if (error.name === 'AbortError') {
-      console.log("hello world")
-    }
+    
   }
 }
 
@@ -107,7 +106,7 @@ export const AIapiRequest = async (data, question, signal) => {
 
 
 export const speakAI = async (text) => {
-
+  console.log("Proccessing speech to text")
   const replacedText = text.replace(/\s+/g, ' ');
 
   const url = 'https://natural-text-to-speech-converter-at-lowest-price.p.rapidapi.com/backend/ttsNewDemo';
@@ -131,7 +130,8 @@ export const speakAI = async (text) => {
         fileFormat: 'mp3',
         sampleRate: 24000
       }
-    })
+    }),
+    signal: signal
   };
 
   try {
@@ -142,7 +142,8 @@ export const speakAI = async (text) => {
     }
     return result.url
   } catch (error) {
-    console.error(error);
+    console.log(error);
+    
   }
 }
 
