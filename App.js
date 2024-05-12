@@ -40,18 +40,13 @@ export default function App() {
   const AIprocess = async (data, input) => {
     try {
 
-      const signal = abortController.signal;
+
       setBtnIcon("stop")
 
       setAItext("Using my brain")
 
-      if (signal.aborted) {
-        // Handle the cancellation appropriately
-        console.log("Request was cancelled");
-        return;
-      }
 
-      const AI = await AIapiRequest(data, input, signal)
+      const AI = await AIapiRequest(data, input)
       AIspeak = await speakAI(AI)
       const audio = await PlayAudio("play", AIspeak)
 
@@ -68,14 +63,12 @@ export default function App() {
 
     } catch (error) {
 
-      console.log(error.name)
-      if (error.name === 'ReferenceError'){
-        setAItext("Fetch Aborted")
-      }
-      else{
-        setAItext("An error occured")
+      console.error(error)
 
-      }
+
+      setAItext("An error occured")
+
+
 
 
 
@@ -106,8 +99,8 @@ export default function App() {
       style={styles.container}>
 
       <View style={styles.header}>
-        <TouchableOpacity><Ionicons name="settings" size={35} style={styles.addIcon} > </Ionicons></TouchableOpacity>
-        <TouchableOpacity><Text style={{ fontSize: 20, fontFamily: 'ObelusCompact' }}>Gatcha</Text></TouchableOpacity>
+
+        <TouchableOpacity><Text style={{ fontSize: 30, fontFamily: 'ObelusCompact' }}>Gatcha</Text></TouchableOpacity>
         <TouchableOpacity onPress={imageprocess}><Ionicons name="camera" size={40} style={styles.pictureIcon}></Ionicons></TouchableOpacity>
 
 
@@ -118,15 +111,23 @@ export default function App() {
 
 
 
-      <Swiper showsButtons={false} showsPagination={false}>
+      <Swiper showsButtons={true} showsPagination={false} loop={false} index={1} nextButton={<Text style={{color: 'pink', fontSize: 50, left: 5}}>›</Text>}  prevButton={<Text style={{color: 'pink', fontSize: 50, right: 5}}>‹</Text>}>
+
+      
+
         <ScrollView style={styles.AIcontainer}>
-          <Text style={{ paddingBottom: 100, fontSize: 20 }}>{AItext}</Text>
+          <Text style={{ paddingBottom: 100, fontSize: 20, color: "white", margin: 10 }}>{AItext}</Text>
 
         </ScrollView>
 
-        <View style={{ borderWidth: 1, borderColor: "blue" }}>
-          <Text>hello</Text>
+        <View style={styles.AIcontainer}>
+          <Text style={{ paddingBottom: 100, fontSize: 20, color: "white", margin: 10 }}>gatcha here</Text>
         </View>
+
+        <View style={styles.AIcontainer}>
+          <Text style={{ paddingBottom: 100, fontSize: 20, color: "white", margin: 10 }}>finetune here</Text>
+        </View>
+
 
       </Swiper>
 
@@ -172,11 +173,13 @@ const styles = StyleSheet.create({
   },
 
   AIcontainer: {
-    //borderWidth: 1,
-    borderColor: "red",
+
+    borderRadius: 17,
+
     alignSelf: "center",
     width: 350,
-    height: 500,
+    height: '100%',
+    backgroundColor: "blue",
 
   },
 
@@ -195,7 +198,12 @@ const styles = StyleSheet.create({
   inputcontainer: {
     backgroundColor: "white",
     flexDirection: "row",
-    margin: 30,
+    marginTop: 15,
+    width: 500,
+    height: 60,
+    backgroundColor: "pink",
+    alignItems: 'center',
+    justifyContent: 'center'
 
   },
 
@@ -204,7 +212,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     //borderWidth: 1,
     borderColor: "blue",
-
+    color: 'pink'
   },
 
   addIcon: {
@@ -220,10 +228,10 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderWidth: 1,
     width: 240,
-    borderRadius: 7,
+    borderRadius: 15,
     height: 40,
     padding: 5,
-
+    backgroundColor: 'white'
   },
 
   sendicon: {

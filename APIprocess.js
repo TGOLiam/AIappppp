@@ -60,7 +60,7 @@ export async function OcrApiRequest(file) {
 }
 
 
-export const AIapiRequest = async (data, question, signal) => {
+export const AIapiRequest = async (data, question) => {
   if (data === undefined) {
     data = ''
   }
@@ -85,7 +85,7 @@ export const AIapiRequest = async (data, question, signal) => {
         }
       ]
     }),
-    signal: signal
+    
   };
 
   try {
@@ -131,7 +131,7 @@ export const speakAI = async (text) => {
         sampleRate: 24000
       }
     }),
-    signal: signal
+    
   };
 
   try {
