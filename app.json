@@ -8,7 +8,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/bibi2.jpeg",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -35,6 +35,7 @@
         }
         
       ]
+      
     ],
     
     "extra": {

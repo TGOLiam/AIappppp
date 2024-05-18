@@ -26,3 +26,4 @@ yarn-error.*
 
 .expo
 node_modules/.cache
+node_modules

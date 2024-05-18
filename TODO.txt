@@ -16,8 +16,8 @@ Finetune functions
 
 LOW:
 
-Design of header and input container
-BETTER ERROR HANDLE
+
+
 CHAT UI when typing
 Actual Design
 GATCHA ABOUT US
