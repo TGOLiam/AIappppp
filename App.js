@@ -4,6 +4,8 @@ import { processImage, OcrApiRequest, AIapiRequest, topic, speakAI, PlayAudio, s
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import { Image } from 'expo-image';
+
 
 
 import Swiper from 'react-native-swiper';
@@ -17,10 +19,12 @@ export default function App() {
   const [userText, setUserText] = useState('')
   const [OCRtext, setOCRData] = useState('')
   const [soundData, setSound] = useState("")
-  
-  
 
-
+  const [BgColor, setBg] = useState("white")
+  const [boxColor, setBox] = useState("#003fae")
+  const [inputColor, setInput] = useState("#083256")
+  const [headerColor, setHeader] = useState('#fb9998')
+  const [showTune, setTune] = useState("flex")
 
   const [buttonIcon, setBtnIcon] = useState("send")
   const [isProcessing, setProcessing] = useState(false)
@@ -60,7 +64,7 @@ export default function App() {
       console.log("AI Response: ", AI)
       setAItext(AI)
       setBtnIcon("send")
-      setProcessing((isProcessing) => !isProcessing)
+      setProcessing(false)
 
     } catch (error) {
 
@@ -94,7 +98,7 @@ export default function App() {
   const [fontsLoaded] = useFonts({
     'ObelusCompact': require('./assets/fonts/ObelusCompact.ttf'),
     'Onesize': require('./assets/fonts/ONESIZE_.ttf'),
-    
+
 
   });
 
@@ -117,12 +121,12 @@ export default function App() {
 
   return (
 
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container} onLayout={onLayoutRootView}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={[styles.container, { backgroundColor: BgColor }]} onLayout={onLayoutRootView}>
 
       <View style={styles.header}>
 
-        <TouchableOpacity><Text style={{ fontSize: 70, fontFamily: 'ObelusCompact', margin: 7, marginBottom: 25, color: '#fb9998'}}>Gatcha</Text></TouchableOpacity>
-        <TouchableOpacity onPress={imageprocess}><Ionicons name="camera" size={40} style={styles.pictureIcon}></Ionicons></TouchableOpacity>
+        <TouchableOpacity><Text style={{ fontSize: 70, fontFamily: 'ObelusCompact', margin: 7, marginBottom: 25, color: headerColor }}>Gatcha</Text></TouchableOpacity>
+        <TouchableOpacity onPress={imageprocess}><Ionicons name="camera" size={40} style={[styles.pictureIcon, { color: headerColor }]}></Ionicons></TouchableOpacity>
 
 
       </View>
@@ -136,17 +140,26 @@ export default function App() {
 
 
 
-        <ScrollView style={styles.AIcontainer}>
-          <Text style={{ fontSize: 20, color: "white", margin: 10, fontFamily: 'Onesize'}}>{AItext}</Text>
+        <ScrollView style={[styles.AIcontainer, { backgroundColor: boxColor }]}>
+          <Text style={{ fontSize: 20, color: "white", margin: 10, fontFamily: 'Onesize' }}>{AItext}</Text>
 
         </ScrollView>
 
-        <View style={styles.AIcontainer}>
-          <Text style={{fontSize: 20, color: "white", margin: 10 }}>gatcha here</Text>
+        <View style={[styles.AIcontainer, { backgroundColor: boxColor, justifyContent: 'center' }]}>
+
+
+
+
+
+
+
+
         </View>
 
-        <View style={styles.AIcontainer}>
-          <Text style={{ fontSize: 20, color: "white", margin: 10 }}>finetune here</Text>
+        <View style={[styles.AIcontainer, { backgroundColor: boxColor, justifyContent: 'center'}]}>
+          <Image source={require('./assets/face.png')} style={[styles.face, { display: showTune }]} contentFit="cover"></Image>
+          <TextInput style={[styles.finetune]} textAlignVertical="top" multiline={true} onFocus={() => { setTune("none") }} onBlur={() => { setTune("flex") }}></TextInput>
+          <TouchableOpacity style={styles.save} ><Text>hello</Text></TouchableOpacity>
         </View>
 
 
@@ -161,8 +174,8 @@ export default function App() {
 
 
       <View style={styles.inputcontainer}>
-        <TouchableOpacity onPress={() => controlAudio("stop", soundData)}><Ionicons name='pause-outline' size={30} style={styles.pause} ></Ionicons></TouchableOpacity>
-        <TouchableOpacity onPress={() => controlAudio("resume", soundData)}><Ionicons name='play-outline' size={30} style={styles.play}></Ionicons></TouchableOpacity>
+        <TouchableOpacity onPress={() => controlAudio("stop", soundData)}><Ionicons name='pause-outline' size={30} style={[styles.pause, { color: inputColor }]} ></Ionicons></TouchableOpacity>
+        <TouchableOpacity onPress={() => controlAudio("resume", soundData)}><Ionicons name='play-outline' size={30} style={[styles.play, { color: inputColor }]}></Ionicons></TouchableOpacity>
         <TextInput placeholder={textHolder} style={styles.input} value={userText} onChangeText={setUserText}></TextInput>
 
         <TouchableOpacity onPress={() => {
@@ -172,7 +185,11 @@ export default function App() {
           setTextHolder(userText)
           setUserText("")
 
-        }}><Ionicons style={styles.sendicon} name={buttonIcon} size={27} color="black" /></TouchableOpacity>
+        }}
+
+
+
+        ><Ionicons style={[styles.sendicon, { color: inputColor }]} name={buttonIcon} size={27} /></TouchableOpacity>
       </View>
 
     </KeyboardAvoidingView>
@@ -189,18 +206,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: "white",
+
 
   },
 
   AIcontainer: {
-
+    flex: 1,
     borderRadius: 17,
-
     alignSelf: "center",
     width: 350,
     height: '100%',
-    backgroundColor: "#003fae",
+
 
   },
 
@@ -224,7 +240,7 @@ const styles = StyleSheet.create({
     height: 60,
     backgroundColor: "#f99b99",
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
 
   },
 
@@ -236,7 +252,7 @@ const styles = StyleSheet.create({
     color: '#fb9998'
   },
 
-  addIcon: {
+  gatcha: {
     //borderWidth: 1,
     borderColor: "blue",
     justifyContent: "flex-start",
@@ -258,18 +274,58 @@ const styles = StyleSheet.create({
   sendicon: {
     margin: 5,
     marginLeft: 12,
-    color: '#083256'
+
   },
 
   play: {
     margin: 3,
     marginRight: 7,
-    color: '#083256'
+
   },
 
   pause: {
     margin: 3,
     marginRight: 7,
-    color: '#083256'
+
   },
+
+
+  finetune: {
+    borderColor: 'black',
+    fontFamily: 'Onesize',
+    width: 300,
+    borderRadius: 15,
+    height: 50,
+    padding: 5,
+    borderColor: "white",
+    borderWidth: 1,
+    margin: 20,
+    color: "white",
+    alignSelf: 'center',
+
+  },
+
+  save: {
+    borderColor: 'black',
+    fontFamily: 'Onesize',
+    width: 300,
+    borderRadius: 15,
+    height: 40,
+    padding: 5,
+    backgroundColor: '#e4e2e2',
+    flexWrap: 'wrap',
+
+    alignSelf: 'center',
+  },
+
+  face: {
+    width: 300,
+    height: 400,
+    
+    alignSelf:'center',
+    borderColor: 'yellow',
+    borderWidth: 1
+  }
+
+
 });

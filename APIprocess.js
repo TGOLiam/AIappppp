@@ -7,6 +7,8 @@ let OCRData
 let gatcha = 'hello'
 let topic = "The image is about what? ONLY ONE SENTENCE"
 let soundObject
+let tune = "Your name is Gatcha, your purpose is to tutor and answer students' queries in their general studies. If they give a topic, you will answer the student's query based on, but not limited to, the given context."
+
 
 export { topic, soundObject }
 
@@ -65,7 +67,7 @@ export const AIapiRequest = async (data, question) => {
     data = ''
   }
   console.log("Processing AI")
-  const url = 'https://models3.p.rapidapi.com/?model_id=5&prompt=Write%20prompt%20in%20body%20not%20here!';
+  const url = 'https://models3.p.rapidapi.com/?model_id=27&prompt=Write%20prompt%20in%20body%20not%20here!';
   const options = {
     method: 'POST',
     headers: {
@@ -77,7 +79,7 @@ export const AIapiRequest = async (data, question) => {
       messages: [
         {
           role: 'assistant',
-          content: `Your name is Gatcha, the mini AI tutor,  your purpose is to tutor and answer students' queries in their general studies .Say "Gatcha!" as a catchline when you answer a query. CONTEXT: ${data}`
+          content: `Your name is Gatcha, your purpose is to tutor and answer students' queries in their general studies. If they give a topic, you will answer the student's query based on, but not limited to, the given context. CONTEXT: ${data}`
         },
         {
           role: 'user',
@@ -106,6 +108,7 @@ export const AIapiRequest = async (data, question) => {
 
 
 export const speakAI = async (text) => {
+  
   console.log("Proccessing speech to text")
   const replacedText = text.replace(/\s+/g, ' ');
 
