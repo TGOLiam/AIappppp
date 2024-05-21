@@ -19,10 +19,30 @@ LOW:
 
 
 CHAT UI when typing
-Actual Design
-GATCHA ABOUT US
+Loading Screen
 
 
 
 
+
+
+
+Gatcha Switch GIF algorithm
+
+if Idle:
+    use Idle Animation
+
+if captured/asked:
+    use thinking Animation
+
+if data is ready:
+    gather duration of speech mp3()
+    if duration:
+        use speaking Animation
+
+if duration ends:
+    use Idle Animation
+
+catch error:
+    use error animation
 

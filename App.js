@@ -5,7 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { Image } from 'expo-image';
-
+import AnimatedImage from './animation'
 
 
 import Swiper from 'react-native-swiper';
@@ -19,12 +19,31 @@ export default function App() {
   const [userText, setUserText] = useState('')
   const [OCRtext, setOCRData] = useState('')
   const [soundData, setSound] = useState("")
+  const [AIstatus, setStatus] = useState("Watchap!! I'm Gatcha!!")
 
-  const [BgColor, setBg] = useState("white")
-  const [boxColor, setBox] = useState("#003fae")
-  const [inputColor, setInput] = useState("#083256")
-  const [headerColor, setHeader] = useState('#fb9998')
+  const [BgColor, setBg] = useState("#fffff")
+  const [boxColor, setBox] = useState("#003dad")
+  const [iconColor, setIcon] = useState("#123355")
+  const [headerColor, setHeader] = useState('#FA9B9B')
+  const [inputBoxColor, setInputBox] = useState('#FA9B9B')
+  const [inputColor, setInput] = useState('#E2E2E2')
+
+
+
   const [showTune, setTune] = useState("flex")
+
+  const idle = require(`./assets/GachaDefaultIdle.gif`)
+  const search = require(`./assets/GachaDefaultThinking.gif`)
+  const speaking = require(`./assets/GachaDefaultSpeaking.gif`)
+  const fail = require(`./assets/GachaDefaultError.gif`)
+
+
+
+
+
+  const [gif, setGif] = useState(idle)
+
+
 
   const [buttonIcon, setBtnIcon] = useState("send")
   const [isProcessing, setProcessing] = useState(false)
@@ -35,8 +54,14 @@ export default function App() {
 
   const imageprocess = async () => {
     setAItext("Using my eyes...")
+    setStatus("Using my eyes...")
+    setGif(search)
+
+
     const image = await processImage()
     setAItext("Reading your image...")
+    setStatus("Reading your image...")
+
     const ocrData = await OcrApiRequest(image)
     setOCRData(ocrData)
     AIprocess(ocrData, topic)
@@ -44,40 +69,29 @@ export default function App() {
 
   const AIprocess = async (data, input) => {
     try {
-
-
+      setGif(search)
       setBtnIcon("stop")
-
-      setAItext("Using my brain")
-
+      setAItext("Using my brain...")
+      setStatus("Using my brain...")
 
       const AI = await AIapiRequest(data, input)
+      setStatus("Initializing speech...")
       AIspeak = await speakAI(AI)
+
       const audio = await PlayAudio("play", AIspeak)
-
-
+      setStatus("Launching audio...")
 
 
       setSound(AIspeak)
-
-
       console.log("AI Response: ", AI)
+      setStatus("Analysis done...")
       setAItext(AI)
       setBtnIcon("send")
       setProcessing(false)
-
+      setGif(idle)
     } catch (error) {
-
       console.error(error)
-
-
       setAItext("An error occured")
-
-
-
-
-
-
     }
   }
 
@@ -92,14 +106,16 @@ export default function App() {
       abortController.abort()
       console.log("ON")
       setBtnIcon("send")
+      setGif(fail)
     }
   }
+
+
+
 
   const [fontsLoaded] = useFonts({
     'ObelusCompact': require('./assets/fonts/ObelusCompact.ttf'),
     'Onesize': require('./assets/fonts/ONESIZE_.ttf'),
-
-
   });
 
 
@@ -145,18 +161,20 @@ export default function App() {
 
         </ScrollView>
 
-        <View style={[styles.AIcontainer, { backgroundColor: boxColor, justifyContent: 'center' }]}>
 
 
 
-
-
-
-
+        <View style={[styles.AIcontainer, { backgroundColor: boxColor, overflow: 'hidden' }]}>
+          <AnimatedImage source={gif} style={[{ width: 450, height: 600, alignSelf: 'center', left: 15, zIndex: 1 }]} />
+          <Text style={{ zIndex: 2, alignSelf: 'center', bottom: 50, fontFamily: 'Onesize', color: "white", fontSize: 17}}>{AIstatus}</Text>
 
         </View>
 
-        <View style={[styles.AIcontainer, { backgroundColor: boxColor, justifyContent: 'center'}]}>
+
+
+
+
+        <View style={[styles.AIcontainer, { backgroundColor: boxColor, justifyContent: 'center' }]}>
           <Image source={require('./assets/face.png')} style={[styles.face, { display: showTune }]} contentFit="cover"></Image>
           <TextInput style={[styles.finetune]} textAlignVertical="top" multiline={true} onFocus={() => { setTune("none") }} onBlur={() => { setTune("flex") }}></TextInput>
           <TouchableOpacity style={styles.save} ><Text>hello</Text></TouchableOpacity>
@@ -173,10 +191,10 @@ export default function App() {
 
 
 
-      <View style={styles.inputcontainer}>
-        <TouchableOpacity onPress={() => controlAudio("stop", soundData)}><Ionicons name='pause-outline' size={30} style={[styles.pause, { color: inputColor }]} ></Ionicons></TouchableOpacity>
-        <TouchableOpacity onPress={() => controlAudio("resume", soundData)}><Ionicons name='play-outline' size={30} style={[styles.play, { color: inputColor }]}></Ionicons></TouchableOpacity>
-        <TextInput placeholder={textHolder} style={styles.input} value={userText} onChangeText={setUserText}></TextInput>
+      <View style={[styles.inputcontainer, { backgroundColor: inputBoxColor }]}>
+        <TouchableOpacity onPress={() => controlAudio("stop", soundData)}><Ionicons name='pause-outline' size={30} style={[styles.pause, { color: iconColor }]} ></Ionicons></TouchableOpacity>
+        <TouchableOpacity onPress={() => controlAudio("resume", soundData)}><Ionicons name='play-outline' size={30} style={[styles.play, { color: iconColor }]}></Ionicons></TouchableOpacity>
+        <TextInput placeholder={textHolder} style={[styles.input, { backgroundColor: inputColor }]} value={userText} onChangeText={setUserText}></TextInput>
 
         <TouchableOpacity onPress={() => {
 
@@ -189,7 +207,7 @@ export default function App() {
 
 
 
-        ><Ionicons style={[styles.sendicon, { color: inputColor }]} name={buttonIcon} size={27} /></TouchableOpacity>
+        ><Ionicons style={[styles.sendicon, { color: iconColor }]} name={buttonIcon} size={27} /></TouchableOpacity>
       </View>
 
     </KeyboardAvoidingView>
@@ -238,7 +256,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     width: 500,
     height: 60,
-    backgroundColor: "#f99b99",
+
     alignItems: 'center',
     justifyContent: 'center',
 
@@ -268,7 +286,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     height: 40,
     padding: 5,
-    backgroundColor: '#e4e2e2'
+
   },
 
   sendicon: {
@@ -321,8 +339,8 @@ const styles = StyleSheet.create({
   face: {
     width: 300,
     height: 400,
-    
-    alignSelf:'center',
+
+    alignSelf: 'center',
     borderColor: 'yellow',
     borderWidth: 1
   }
