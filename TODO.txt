@@ -9,6 +9,7 @@ MEDIUM:
 Pause and Play functions
 Finetune tab
 Greeting function
+buttoon disable
 
 HIGH:
 

@@ -8,9 +8,11 @@ let gatcha = 'hello'
 let topic = "The image is about what? ONLY ONE SENTENCE. End with How can i help you?"
 let soundObject
 let tune = "Your name is Gatcha, your purpose is to tutor and answer students' queries in their general studies. If they give a topic, you will answer the student's query based on, but not limited to, the given context. You will also ask what can you help about the context. If they did not give a context, disregard"
-let model = "14"
+let model = "27"
+let duration
 
-export { topic, soundObject }
+
+export { topic, soundObject, duration}
 
 export const processImage = async () => {
   await ImagePicker.requestCameraPermissionsAsync();
@@ -152,17 +154,21 @@ export const speakAI = async (text) => {
 }
 
 export const PlayAudio = async (input, audio) => {
-  console.log(audio)
+  console.log(audio);
   try {
-    soundObject = new Audio.Sound();
+    const soundObject = new Audio.Sound();
+
     await soundObject.loadAsync({ uri: audio });
-    if (input == "play") {
-      await soundObject.playAsync();
+    const status = await soundObject.getStatusAsync();
+
+    if (status.isLoaded) {
+      duration = status.durationMillis; 
+      console.log(`Audio duration: ${duration} seconds`);
+
+      if (input == "play") {
+        await soundObject.playAsync();
+      }
     }
-
-
-
-
   } catch (error) {
     console.log('Error playing audio:', error);
   }

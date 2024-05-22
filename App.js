@@ -1,6 +1,6 @@
 import { useReducer, useState, useEffect, useCallback } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, TextInput, KeyboardAvoidingView, ScrollView, Switch } from 'react-native';
-import { processImage, OcrApiRequest, AIapiRequest, topic, speakAI, PlayAudio, soundObject, controlAudio } from './APIprocess'
+import { processImage, OcrApiRequest, AIapiRequest, topic, speakAI, PlayAudio, soundObject, controlAudio, duration } from './APIprocess'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
@@ -34,7 +34,7 @@ export default function App() {
 
   const idle = require(`./assets/GachaDefaultIdle.gif`)
   const search = require(`./assets/GachaDefaultThinking.gif`)
-  const speaking = require(`./assets/GachaDefaultSpeaking.gif`)
+  const speaking = require(`./assets/GachaDefaultThinking2.gif`)
   const fail = require(`./assets/GachaDefaultError.gif`)
 
 
@@ -88,7 +88,10 @@ export default function App() {
       setAItext(AI)
       setBtnIcon("send")
       setProcessing(false)
-      setGif(idle)
+      setGif(speaking)
+      setTimeout(function() {
+        setGif(idle);
+    }, duration + 500);      
     } catch (error) {
       console.error(error)
       setAItext("An error occured")
