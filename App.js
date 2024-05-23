@@ -19,7 +19,7 @@ export default function App() {
   const [userText, setUserText] = useState('')
   const [OCRtext, setOCRData] = useState('')
   const [soundData, setSound] = useState("")
-  const [AIstatus, setStatus] = useState("Watchap!! I'm Gatcha!!")
+  const [AIstatus, setStatus] = useState("Watchap!! I'm Gatcha!!\nShare a photo!")
 
   const [BgColor, setBg] = useState("#fffff")
   const [boxColor, setBox] = useState("#003dad")
@@ -89,12 +89,15 @@ export default function App() {
       setBtnIcon("send")
       setProcessing(false)
       setGif(speaking)
-      setTimeout(function() {
+      setTimeout(function () {
         setGif(idle);
-    }, duration + 500);      
+      }, duration + 500);
+
     } catch (error) {
       console.error(error)
       setAItext("An error occured")
+      setStatus("An error occured")
+      setGif(error)
     }
   }
 
@@ -145,7 +148,6 @@ export default function App() {
       <View style={styles.header}>
 
         <TouchableOpacity><Text style={{ fontSize: 70, fontFamily: 'ObelusCompact', margin: 7, marginBottom: 25, color: headerColor }}>Gatcha</Text></TouchableOpacity>
-        <TouchableOpacity onPress={imageprocess}><Ionicons name="camera" size={40} style={[styles.pictureIcon, { color: headerColor }]}></Ionicons></TouchableOpacity>
 
 
       </View>
@@ -169,7 +171,7 @@ export default function App() {
 
         <View style={[styles.AIcontainer, { backgroundColor: boxColor, overflow: 'hidden' }]}>
           <AnimatedImage source={gif} style={[{ width: 450, height: 600, alignSelf: 'center', left: 15, zIndex: 1 }]} />
-          <Text style={{ zIndex: 2, alignSelf: 'center', bottom: 50, fontFamily: 'Onesize', color: "white", fontSize: 17}}>{AIstatus}</Text>
+          <Text style={{ zIndex: 2, alignSelf: 'center', bottom: 70, fontFamily: 'Onesize', color: "white", fontSize: 17, textAlign: 'center' }}>{AIstatus}</Text>
 
         </View>
 
@@ -178,9 +180,28 @@ export default function App() {
 
 
         <View style={[styles.AIcontainer, { backgroundColor: boxColor, justifyContent: 'center' }]}>
-          <Image source={require('./assets/face.png')} style={[styles.face, { display: showTune }]} contentFit="cover"></Image>
-          <TextInput style={[styles.finetune]} textAlignVertical="top" multiline={true} onFocus={() => { setTune("none") }} onBlur={() => { setTune("flex") }}></TextInput>
-          <TouchableOpacity style={styles.save} ><Text>hello</Text></TouchableOpacity>
+          <View style={[styles.AIcontainer, { backgroundColor: headerColor, flex: 0, height: '95%', flexDirection: "column", alignItems: 'center', justifyContent: 'space-between' }]}>
+            <Text style={{ justifyContent: "flex-start", margin: 20, fontFamily: 'Onesize', fontSize: 22, borderBottomWidth: 1, width: '90%', textAlign: 'center' }}>tell me how to act!</Text>
+
+            <TextInput style={[styles.AIcontainer, { backgroundColor: '#d99191' }]}></TextInput>
+
+
+
+
+            <View style={{borderWidth: 1, width: '80%', height: 50}}>
+              <TouchableOpacity></TouchableOpacity>
+              <TouchableOpacity></TouchableOpacity>
+
+            </View>
+
+
+
+            <View style={{ width: '90%', justifyContent: "space-between", marginBottom: 25, flexDirection: 'row', borderTopWidth: 1 }}>
+              <TouchableOpacity><Image source={require('./assets/defaultskin.png')} style={styles.skin} /></TouchableOpacity>
+              <TouchableOpacity><Image source={require('./assets/blackskin.png')} style={styles.skin} /></TouchableOpacity>
+              <TouchableOpacity><Image source={require('./assets/yellowskin.png')} style={styles.skin} /></TouchableOpacity>
+            </View>
+          </View>
         </View>
 
 
@@ -195,8 +216,9 @@ export default function App() {
 
 
       <View style={[styles.inputcontainer, { backgroundColor: inputBoxColor }]}>
-        <TouchableOpacity onPress={() => controlAudio("stop", soundData)}><Ionicons name='pause-outline' size={30} style={[styles.pause, { color: iconColor }]} ></Ionicons></TouchableOpacity>
-        <TouchableOpacity onPress={() => controlAudio("resume", soundData)}><Ionicons name='play-outline' size={30} style={[styles.play, { color: iconColor }]}></Ionicons></TouchableOpacity>
+
+        <TouchableOpacity onPress={imageprocess}><Ionicons name='camera' size={30} style={[styles.play, { color: iconColor }]}></Ionicons></TouchableOpacity>
+
         <TextInput placeholder={textHolder} style={[styles.input, { backgroundColor: inputColor }]} value={userText} onChangeText={setUserText}></TextInput>
 
         <TouchableOpacity onPress={() => {
@@ -235,8 +257,8 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 17,
     alignSelf: "center",
-    width: 350,
-    height: '100%',
+    width: '90%',
+
 
 
   },
@@ -248,8 +270,9 @@ const styles = StyleSheet.create({
     //borderWidth: 1,
     borderColor: "blue",
     alignItems: "center",
+    justifyContent: "center",
     flexDirection: "row",
-    justifyContent: "space-between",
+
     marginTop: 25
   },
 
@@ -285,7 +308,7 @@ const styles = StyleSheet.create({
   input: {
     borderColor: 'black',
     fontFamily: 'Onesize',
-    width: 240,
+    width: 260,
     borderRadius: 15,
     height: 40,
     padding: 5,
@@ -299,9 +322,10 @@ const styles = StyleSheet.create({
   },
 
   play: {
-    margin: 3,
-    marginRight: 7,
-
+    margin: 1,
+    marginRight: 15,
+    borderWidth: 1,
+    borderColor: 'red'
   },
 
   pause: {
@@ -310,42 +334,12 @@ const styles = StyleSheet.create({
 
   },
 
-
-  finetune: {
-    borderColor: 'black',
-    fontFamily: 'Onesize',
-    width: 300,
-    borderRadius: 15,
-    height: 50,
-    padding: 5,
-    borderColor: "white",
-    borderWidth: 1,
-    margin: 20,
-    color: "white",
-    alignSelf: 'center',
-
-  },
-
-  save: {
-    borderColor: 'black',
-    fontFamily: 'Onesize',
-    width: 300,
-    borderRadius: 15,
-    height: 40,
-    padding: 5,
-    backgroundColor: '#e4e2e2',
-    flexWrap: 'wrap',
-
-    alignSelf: 'center',
-  },
-
-  face: {
-    width: 300,
-    height: 400,
-
-    alignSelf: 'center',
-    borderColor: 'yellow',
-    borderWidth: 1
+  skin: {
+    width: 70,
+    backgroundColor: '#d99191',
+    borderRadius: 10,
+    height: 70,
+    marginTop: 10
   }
 
 

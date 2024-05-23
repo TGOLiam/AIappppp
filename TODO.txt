@@ -1,6 +1,6 @@
 URGENT:
 
-
+gather duration
 BUTTON LOGIC (why first click, toggle deosnt work)
 
 MEDIUM:
@@ -8,7 +8,6 @@ MEDIUM:
 
 Pause and Play functions
 Finetune tab
-Greeting function
 buttoon disable
 
 HIGH:
@@ -19,7 +18,7 @@ LOW:
 
 
 
-CHAT UI when typing
+
 Loading Screen
 
 
@@ -28,22 +27,5 @@ Loading Screen
 
 
 
-Gatcha Switch GIF algorithm
 
-if Idle:
-    use Idle Animation
-
-if captured/asked:
-    use thinking Animation
-
-if data is ready:
-    gather duration of speech mp3()
-    if duration:
-        use speaking Animation
-
-if duration ends:
-    use Idle Animation
-
-catch error:
-    use error animation
 

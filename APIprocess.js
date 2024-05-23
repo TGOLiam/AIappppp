@@ -6,13 +6,13 @@ import { Audio } from 'expo-av';
 let OCRData
 let gatcha = 'hello'
 let topic = "The image is about what? ONLY ONE SENTENCE. End with How can i help you?"
-let soundObject
-let tune = "Your name is Gatcha, your purpose is to tutor and answer students' queries in their general studies. If they give a topic, you will answer the student's query based on, but not limited to, the given context. You will also ask what can you help about the context. If they did not give a context, disregard"
+
+let tune = "Your name is Liam"
 let model = "27"
 let duration
+let soundObject = new Audio.Sound();
 
-
-export { topic, soundObject, duration}
+export { topic, soundObject, duration }
 
 export const processImage = async () => {
   await ImagePicker.requestCameraPermissionsAsync();
@@ -68,7 +68,7 @@ export const AIapiRequest = async (data, question) => {
   if (data === undefined) {
     data = ''
   }
-  
+
   console.log("Processing AI")
   const url = `https://models3.p.rapidapi.com/?model_id=${model}&prompt=Write%20prompt%20in%20body%20not%20here!`;
   const options = {
@@ -90,7 +90,7 @@ export const AIapiRequest = async (data, question) => {
         }
       ]
     }),
-    
+
   };
 
   try {
@@ -101,7 +101,7 @@ export const AIapiRequest = async (data, question) => {
     return AItext
   } catch (error) {
     console.log(error);
-    
+
   }
 }
 
@@ -111,7 +111,7 @@ export const AIapiRequest = async (data, question) => {
 
 
 export const speakAI = async (text) => {
-  
+
   console.log("Proccessing speech to text")
   const replacedText = text.replace(/\s+/g, ' ');
 
@@ -137,7 +137,7 @@ export const speakAI = async (text) => {
         sampleRate: 24000
       }
     }),
-    
+
   };
 
   try {
@@ -149,47 +149,28 @@ export const speakAI = async (text) => {
     return result.url
   } catch (error) {
     console.log(error);
-    
+
   }
 }
 
 export const PlayAudio = async (input, audio) => {
   console.log(audio);
   try {
-    const soundObject = new Audio.Sound();
+    const { sound } = await Audio.Sound.createAsync({ uri: audio });
+    const status = sound.getStatusAsync()
 
-    await soundObject.loadAsync({ uri: audio });
-    const status = await soundObject.getStatusAsync();
 
-    if (status.isLoaded) {
-      duration = status.durationMillis; 
-      console.log(`Audio duration: ${duration} seconds`);
 
-      if (input == "play") {
-        await soundObject.playAsync();
-      }
+    await sound.playAsync(); // Wait for playback to start
+
+    if (input === "pause") {
+      await sound.pauseAsync(); // Wait for pausing to complete
     }
   } catch (error) {
     console.log('Error playing audio:', error);
   }
 };
 
-export const controlAudio = async (input, audio) => {
-  const soundObject = new Audio.Sound();
-  await soundObject.loadAsync({ uri: audio });
-  try {
-    if (input == "stop") {
-      await soundObject.stopAsync();
-    }
 
-    if (input == "resume") {
-      await soundObject.playAsync();
-    }
-  }
-  catch (error) {
-    console.log('Error playing audio:', error);
-  }
-
-}
 
 
